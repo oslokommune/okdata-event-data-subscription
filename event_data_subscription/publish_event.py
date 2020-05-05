@@ -8,7 +8,7 @@ patch_all()
 
 api_gateway_client = boto3.client(
     "apigatewaymanagementapi",
-    region_name="wss://***REMOVED***.execute-api.eu-west-1.amazonaws.com/dev",
+    endpoint_url="wss://***REMOVED***.execute-api.eu-west-1.amazonaws.com/dev",
 )
 
 dynamodb = boto3.resource("dynamodb", region_name="eu-west-1")
