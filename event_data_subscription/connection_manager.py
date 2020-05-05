@@ -1,6 +1,7 @@
 # import json
 import boto3
 import datetime
+from boto3.dynamodb.conditions import Key
 
 from aws_xray_sdk.core import patch_all, xray_recorder
 from dataplatform.awslambda.logging import logging_wrapper, log_add
@@ -33,9 +34,9 @@ def handle(event, context):
     log_add(event_type=event_type, connection_id=connection_id)
 
     if event_type == "CONNECT":
-        try:
-            dataset_id = event["queryStringParameters"]["dataset_id"]
-        except KeyError:
+        dataset_id = event.get("queryStringParameters", {}).get("dataset_id")
+
+        if not dataset_id:
             return {"statusCode": 400, "body": "Bad request"}
 
         log_add(dataset_id=dataset_id)
@@ -51,9 +52,7 @@ def handle(event, context):
         return {"statusCode": 200, "body": "Connected"}
 
     elif event_type == "DISCONNECT":
-        subscriptions_table.delete_item(
-            Key={"connection_id": connection_id, "dataset_id": dataset_id}
-        )
+        subscriptions_table.delete_item(Key={"connection_id": connection_id})
 
         return {"statusCode": 200, "body": "Disconnected"}
 
