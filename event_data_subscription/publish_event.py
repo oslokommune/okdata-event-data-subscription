@@ -6,7 +6,10 @@ from dataplatform.awslambda.logging import logging_wrapper, log_add, log_excepti
 
 patch_all()
 
-api_gateway_client = boto3.client("apigatewaymanagementapi", region_name="eu-west-1")
+api_gateway_client = boto3.client(
+    "apigatewaymanagementapi",
+    endpoint_url="wss://***REMOVED***.execute-api.eu-west-1.amazonaws.com/dev",
+)
 
 dynamodb = boto3.resource("dynamodb", region_name="eu-west-1")
 event_data_subscriptions_table = dynamodb.Table("event-data-subscriptions")
