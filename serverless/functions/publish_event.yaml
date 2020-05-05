@@ -1,3 +1,5 @@
 handler: event_data_subscription.publish_event.handle
+events:
+  - stream: arn:aws:kinesis:#{AWS::Region}:#{AWS::AccountId}:stream/dp.green.event-data-subscription-test.incoming.1.json
 layers:
   - ${ssm:/dataplatform/python-base-lambda-layer/arn}
