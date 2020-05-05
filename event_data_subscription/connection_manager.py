@@ -1,4 +1,6 @@
-import json
+# import json
+import boto3
+import datetime
 
 from aws_xray_sdk.core import patch_all, xray_recorder
 from dataplatform.awslambda.logging import logging_wrapper, log_add
@@ -14,8 +16,9 @@ patch_all()
 # origo_config.config["cacheCredentials"] = True
 # auth_client = SimpleDatasetAuthorizerClient()  # config=origo_config)
 
-# dynamodb = resource("dynamodb", region_name="eu-west-1")
-# log_aggregator_table = dynamodb.Table("event-subscribers")
+dynamodb = boto3.resource("dynamodb", region_name="eu-west-1")
+subscriptions_table_name = "event-data-subscriptions"
+subscriptions_table = dynamodb.Table(subscriptions_table_name)
 
 
 @logging_wrapper
@@ -29,17 +32,28 @@ def handle(event, context):
 
     log_add(event_type=event_type, connection_id=connection_id)
 
-    return {"statusCode": 200, "body": json.dumps({"response": "hello"})}
-
-    """
     if event_type == "CONNECT":
-        # handle connect
-        pass
+        dataset_id = event.get("queryStringParameters", {}).get("dataset_id")
+
+        if not dataset_id:
+            return {"statusCode": 400, "body": "Bad request"}
+
+        log_add(dataset_id=dataset_id)
+
+        subscriptions_table.put_item(
+            Item={
+                "connection_id": connection_id,
+                "dataset_id": dataset_id,
+                "connected_at": datetime.datetime.utcnow().isoformat(),
+            }
+        )
+
+        return {"statusCode": 200, "body": "Connected"}
 
     elif event_type == "DISCONNECT":
-        # handle disconnect
-        pass
+        subscriptions_table.delete_item(Key={"connection_id": connection_id})
+
+        return {"statusCode": 200, "body": "Disconnected"}
 
     else:
-        # handle
-    """
+        return {"statusCode": 500, "body": "Unrecognized event type"}

@@ -2,6 +2,15 @@ handler: event_data_subscription.connection_manager.handle
 events:
   - websocket:
       route: $connect
+      parameters:
+        querystrings:
+          dataset_id: true
+      #authorizer:
+      #  arn: ${self:custom.keycloakArn.${self:provider.stage}, self:custom.keycloakArn.dev}
+      #  resultTtlInSeconds: 300
+      #  identitySource: method.request.header.Authorization
+      #  identityValidationExpression: "^(B|b)earer [-0-9a-zA-Z\\._]*$"
+      #  type: token
   - websocket:
       route: $disconnect
 layers:

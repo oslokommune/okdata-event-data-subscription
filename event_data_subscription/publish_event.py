@@ -26,7 +26,7 @@ def handle(event, context):
 
 
 def route_data_to_subscribers(record):
-    source_stream_arn = record["eventSourceArn"]
+    source_stream_arn = record["eventSourceARN"]
     dataset_id = resolve_dataset_id(source_stream_arn)
     log_add(dataset_id=dataset_id)
 
