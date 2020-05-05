@@ -44,7 +44,7 @@ def route_data_to_subscribers(record):
 
 def get_subscriber_connections_ids(dataset_id):
     query_result = event_data_subscriptions_table.query(
-        KeyConditionExpression=Key("dataset_id").eq(dataset_id)
+        KeyConditionExpression=Key("dataset_id").eq(dataset_id), IndexName="ByDatasetId"
     )
     return [item["connection_id"] for item in query_result["Items"]]
 
