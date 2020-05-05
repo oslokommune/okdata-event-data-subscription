@@ -8,7 +8,7 @@ patch_all()
 
 api_gateway_client = boto3.client(
     "apigatewaymanagementapi",
-    endpoint_url="wss://***REMOVED***.execute-api.eu-west-1.amazonaws.com/dev",
+    endpoint_url="https://***REMOVED***.execute-api.eu-west-1.amazonaws.com/dev",
 )
 
 dynamodb = boto3.resource("dynamodb", region_name="eu-west-1")
@@ -36,7 +36,7 @@ def route_data_to_subscribers(record):
     for connection_id in subscriber_connection_ids:
         try:
             api_gateway_client.post_to_connection(
-                ConnectionId=connection_id, Data=event_data.encode("utf-8")
+                ConnectionId=connection_id, Data=event_data
             )
         except Exception as e:
             log_exception(e)
