@@ -1,0 +1,3 @@
+handler: event_data_subscription.publish_event.handle
+layers:
+  - ${ssm:/dataplatform/python-base-lambda-layer/arn}

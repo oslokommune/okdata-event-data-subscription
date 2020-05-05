@@ -1,0 +1,8 @@
+handler: event_data_subscription.connection_manager.handle
+events:
+  - websocket:
+      route: $connect
+  - websocket:
+      route: $disconnect
+layers:
+  - ${ssm:/dataplatform/python-base-lambda-layer/arn}
