@@ -1,7 +1,6 @@
 # import json
 import boto3
 import datetime
-from boto3.dynamodb.conditions import Key
 
 from aws_xray_sdk.core import patch_all, xray_recorder
 from dataplatform.awslambda.logging import logging_wrapper, log_add
