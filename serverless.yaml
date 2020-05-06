@@ -22,6 +22,9 @@ provider:
     STAGE: ${self:provider.stage}
     VERSION: ${self:custom.version}
     SERVICE_NAME: ${self:service}
+    ORIGO_CLIENT_ID: event-collector
+    ORIGO_CLIENT_SECRET: ${ssm:/dataplatform/apis/event-collector/auth/client_secret~true}
+    ORIGO_ENVIRONMENT: ${self:provider.stage}
 package:
   exclude:
     - '**/*'

@@ -12,10 +12,10 @@ setup(
     version="0.1.0",
     author="Origo Dataplattform",
     author_email="dataplattform@oslo.kommune.no",
-    description="Blueprint for lambda function at Oslo Origo",
+    description="Event stream subscription using WebSockets",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.oslo.kommune.no/origo-dataplatform/lambda-boilerplate",
+    url="https://github.oslo.kommune.no/origo-dataplatform/event-data-subscription-poc",
     packages=find_packages(),
-    install_requires=[],
+    install_requires=["origo-sdk-python"],
 )
