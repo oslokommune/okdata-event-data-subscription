@@ -20,6 +20,12 @@ subscriptions_table_name = "event-data-subscriptions"
 subscriptions_table = dynamodb.Table(subscriptions_table_name)
 
 
+def get_bearer_token(header):
+    auth_type, _, token = header.partition(" ")
+    if auth_type.lower() == "bearer" and token:
+        return token
+
+
 @logging_wrapper
 @xray_recorder.capture("handle")
 def handle(event, context):
@@ -29,17 +35,23 @@ def handle(event, context):
     log_add(event_type=event_type, connection_id=connection_id)
 
     if event_type == "CONNECT":
+        auth_token = get_bearer_token(event["headers"].get("Authorization", ""))
         query_params = event.get("queryStringParameters", {})
         dataset_id = query_params.get("dataset_id")
         webhook_token = query_params.get("webhook_token")
 
-        if not dataset_id or not webhook_token:
+        log_add(dataset_id=dataset_id)
+
+        if not dataset_id or not any([auth_token, webhook_token]):
             return {"statusCode": 400, "body": "Bad request"}
 
-        auth_response = auth_client.authorize_webhook_token(dataset_id, webhook_token)
-        has_access = auth_response.get("access", False)
+        has_access = (
+            auth_client.check_dataset_access(dataset_id, bearer_token=auth_token)
+            if auth_token
+            else auth_client.authorize_webhook_token(dataset_id, webhook_token)
+        ).get("access", False)
 
-        log_add(dataset_id=dataset_id, has_dataset_access=has_access)
+        log_add(has_dataset_access=has_access)
 
         if not has_access:
             return {"statusCode": 403, "body": "Forbidden"}

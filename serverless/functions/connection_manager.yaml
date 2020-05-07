@@ -2,10 +2,6 @@ handler: event_data_subscription.connection_manager.handle
 events:
   - websocket:
       route: $connect
-      parameters:
-        querystrings:
-          dataset_id: true
-          webhook_token: true
   - websocket:
       route: $disconnect
 layers:

@@ -31,7 +31,6 @@ package:
   include:
     - event_data_subscription/*.py
 
-
 functions:
   connection_manager: ${file(serverless/functions/connection_manager.yaml)}
   publish_event: ${file(serverless/functions/publish_event.yaml)}
