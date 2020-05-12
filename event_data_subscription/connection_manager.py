@@ -1,8 +1,9 @@
 import boto3
 import datetime
 
+from requests.exceptions import HTTPError
 from aws_xray_sdk.core import patch_all, xray_recorder
-from dataplatform.awslambda.logging import logging_wrapper, log_add
+from dataplatform.awslambda.logging import logging_wrapper, log_add, log_exception
 
 from origo.dataset_authorizer.simple_dataset_authorizer_client import (
     SimpleDatasetAuthorizerClient,
@@ -45,11 +46,21 @@ def handle(event, context):
         if not dataset_id or not any([auth_token, webhook_token]):
             return {"statusCode": 400, "body": "Bad request"}
 
-        has_access = (
-            auth_client.check_dataset_access(dataset_id, bearer_token=auth_token)
-            if auth_token
-            else auth_client.authorize_webhook_token(dataset_id, webhook_token)
-        ).get("access", False)
+        try:
+            has_access = (
+                auth_client.check_dataset_access(dataset_id, bearer_token=auth_token)
+                if auth_token
+                else auth_client.authorize_webhook_token(dataset_id, webhook_token)
+            ).get("access", False)
+        except HTTPError as e:
+            log_exception(e)
+            if e.response.status_code == 401:
+                return {"statusCode": 401, "body": "Unauthorized"}
+            else:
+                return {
+                    "statusCode": 500,
+                    "body": f"Error occured during connect. RequestId: {context.aws_request_id}",
+                }
 
         log_add(has_dataset_access=has_access)
 
