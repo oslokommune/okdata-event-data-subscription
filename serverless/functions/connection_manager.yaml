@@ -5,7 +5,7 @@ events:
       parameters:
         querystrings:
           dataset_id: true
-          webhook_token: true
+          webhook_token: false
   - websocket:
       route: $disconnect
 layers:
