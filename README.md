@@ -1,2 +1,2 @@
-event-data-subscription-poc
+event-data-subscription
 ==================
