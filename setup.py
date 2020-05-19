@@ -15,7 +15,7 @@ setup(
     description="Event stream subscription using WebSockets",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.oslo.kommune.no/origo-dataplatform/event-data-subscription-poc",
+    url="https://github.oslo.kommune.no/origo-dataplatform/event-data-subscription",
     packages=find_packages(),
     install_requires=["origo-sdk-python"],
 )

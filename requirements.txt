@@ -11,7 +11,7 @@ ecdsa==0.15               # via python-jose
 idna==2.9                 # via requests
 importlib-metadata==1.6.0  # via jsonschema
 jsonschema==3.2.0         # via origo-sdk-python
-origo-sdk-python==0.2.1   # via event-data-subscription-poc (setup.py)
+origo-sdk-python==0.2.2   # via event-data-subscription (setup.py)
 prettytable==0.7.2        # via origo-sdk-python
 pyasn1==0.4.8             # via python-jose, rsa
 pyjwt==1.7.1              # via origo-sdk-python
