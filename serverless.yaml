@@ -25,6 +25,16 @@ provider:
     ORIGO_CLIENT_ID: ${self:service.name}
     ORIGO_CLIENT_SECRET: ${ssm:/dataplatform/${self:service.name}/keycloak-client-secret~true}
     ORIGO_ENVIRONMENT: ${self:provider.stage}
+    WEBSOCKET_ENDPOINT: 
+      Fn::Join:
+        - ""
+        - - "https://"
+          - Ref: "WebsocketsApi"
+          - ".execute-api."
+          - ${self:provider.region}.
+          - Ref: "AWS::URLSuffix"
+          - "/"
+          - ${self:provider.stage}
 package:
   exclude:
     - '**/*'

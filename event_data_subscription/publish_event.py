@@ -1,3 +1,4 @@
+import os
 import base64
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -6,9 +7,10 @@ from dataplatform.awslambda.logging import logging_wrapper, log_add, log_excepti
 
 patch_all()
 
+socket_endpoint_url = os.environ["WEBSOCKET_ENDPOINT"]
+
 api_gateway_client = boto3.client(
-    "apigatewaymanagementapi",
-    endpoint_url="https://***REMOVED***.execute-api.eu-west-1.amazonaws.com/dev",
+    "apigatewaymanagementapi", endpoint_url=socket_endpoint_url,
 )
 
 dynamodb = boto3.resource("dynamodb", region_name="eu-west-1")
