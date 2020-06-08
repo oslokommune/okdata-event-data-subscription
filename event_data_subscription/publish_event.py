@@ -10,7 +10,7 @@ patch_all()
 socket_endpoint_url = os.environ["WEBSOCKET_ENDPOINT"]
 
 api_gateway_client = boto3.client(
-    "apigatewaymanagementapi", endpoint_url=socket_endpoint_url,
+    "apigatewaymanagementapi", endpoint_url=socket_endpoint_url, region_name="eu-west-1"
 )
 
 dynamodb = boto3.resource("dynamodb", region_name="eu-west-1")

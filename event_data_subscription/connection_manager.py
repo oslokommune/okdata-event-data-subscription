@@ -71,7 +71,11 @@ def handle(event, context):
             Item={
                 "connection_id": connection_id,
                 "dataset_id": dataset_id,
-                "connected_at": datetime.datetime.utcnow().isoformat(),
+                "connected_at": str(
+                    datetime.datetime.utcnow()
+                    .replace(tzinfo=datetime.timezone.utc)
+                    .isoformat()
+                ),
             }
         )
 
