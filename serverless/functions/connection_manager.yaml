@@ -9,5 +9,5 @@ events:
   - websocket:
       route: $disconnect
 layers:
-  - ${ssm:/dataplatform/python-base-lambda-layer/arn}
+  - ${ssm:/dataplatform/shared/python-base-layer-arn}
 
