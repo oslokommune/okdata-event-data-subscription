@@ -5,10 +5,10 @@ from requests.exceptions import HTTPError
 from aws_xray_sdk.core import patch_all, xray_recorder
 
 from okdata.aws.logging import logging_wrapper, log_add, log_exception
-from origo.dataset_authorizer.simple_dataset_authorizer_client import (
+from okdata.sdk.dataset_authorizer.simple_dataset_authorizer_client import (
     SimpleDatasetAuthorizerClient,
 )
-from origo.config import Config
+from okdata.sdk.config import Config
 
 patch_all()
 

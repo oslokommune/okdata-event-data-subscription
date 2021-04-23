@@ -6,7 +6,7 @@ from unittest.mock import Mock
 from moto import mock_dynamodb2
 from requests.exceptions import HTTPError
 
-from origo.dataset_authorizer.simple_dataset_authorizer_client import (
+from okdata.sdk.dataset_authorizer.simple_dataset_authorizer_client import (
     SimpleDatasetAuthorizerClient,
 )
 
