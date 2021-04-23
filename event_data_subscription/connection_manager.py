@@ -3,8 +3,8 @@ import datetime
 
 from requests.exceptions import HTTPError
 from aws_xray_sdk.core import patch_all, xray_recorder
-from dataplatform.awslambda.logging import logging_wrapper, log_add, log_exception
 
+from okdata.aws.logging import logging_wrapper, log_add, log_exception
 from origo.dataset_authorizer.simple_dataset_authorizer_client import (
     SimpleDatasetAuthorizerClient,
 )
