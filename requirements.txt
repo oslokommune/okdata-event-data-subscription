@@ -22,6 +22,8 @@ jsonschema==3.2.0
     # via okdata-sdk
 okdata-aws==0.3.2
     # via event-data-subscription (setup.py)
+okdata-resource-auth==0.1.0
+    # via event-data-subscription (setup.py)
 okdata-sdk==0.7.0
     # via
     #   event-data-subscription (setup.py)
@@ -44,6 +46,7 @@ python-keycloak==0.24.0
     # via okdata-sdk
 requests==2.25.1
     # via
+    #   okdata-resource-auth
     #   okdata-sdk
     #   python-keycloak
 rsa==4.7.2

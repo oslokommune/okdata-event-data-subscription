@@ -25,6 +25,9 @@ provider:
     ORIGO_CLIENT_ID: ${self:service.name}
     ORIGO_CLIENT_SECRET: ${ssm:/dataplatform/${self:service.name}/keycloak-client-secret~true}
     ORIGO_ENVIRONMENT: ${self:provider.stage}
+    KEYCLOAK_SERVER: ${ssm:/dataplatform/shared/keycloak-server-url}
+    KEYCLOAK_REALM: "api-catalog"
+    RESOURCE_SERVER_CLIENT_ID: "okdata-resource-server"
     WEBSOCKET_ENDPOINT:
       Fn::Join:
         - ""

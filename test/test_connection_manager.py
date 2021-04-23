@@ -8,7 +8,8 @@ from test.conftest import (
     create_subscriptions_table,
     datetime_now,
     auth_token,
-    bad_auth_token,
+    auth_token_unauthorized,
+    auth_token_bad,
     connection_id,
     dataset_id,
 )
@@ -65,13 +66,13 @@ class TestConnectionManager:
     def test_connect_bad_auth(self, mock_auth, mock_dynamodb):
         no_auth_event = connection_event("CONNECT", connection_id, dataset_id)
         webhook_auth_event = connection_event(
-            "CONNECT", connection_id, dataset_id, webhook_token=bad_auth_token
+            "CONNECT", connection_id, dataset_id, webhook_token=auth_token_unauthorized
         )
         bearer_auth_event = connection_event(
-            "CONNECT", connection_id, dataset_id, bearer_token=bad_auth_token
+            "CONNECT", connection_id, dataset_id, bearer_token=auth_token_unauthorized
         )
         webhook_auth_event = connection_event(
-            "CONNECT", connection_id, dataset_id, webhook_token=bad_auth_token
+            "CONNECT", connection_id, dataset_id, webhook_token=auth_token_unauthorized
         )
         bad_request_response = {"statusCode": 400, "body": "Bad request"}
         forbidden_response = {"statusCode": 403, "body": "Forbidden"}
@@ -80,9 +81,9 @@ class TestConnectionManager:
         assert connection_manager.handle(bearer_auth_event, {}) == forbidden_response
         assert connection_manager.handle(webhook_auth_event, {}) == forbidden_response
 
-    def test_connect_unauthorized(self, mock_auth_error, mock_dynamodb):
+    def test_connect_unauthorized(self, mock_auth, mock_dynamodb):
         event = connection_event(
-            "CONNECT", connection_id, dataset_id, bearer_token=auth_token
+            "CONNECT", connection_id, dataset_id, bearer_token=auth_token_bad
         )
         assert connection_manager.handle(event, {}) == {
             "statusCode": 401,
