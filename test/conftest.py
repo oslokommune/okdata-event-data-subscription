@@ -6,7 +6,8 @@ from unittest.mock import Mock
 from moto import mock_dynamodb2
 from requests.exceptions import HTTPError
 
-from origo.dataset_authorizer.simple_dataset_authorizer_client import (
+from okdata.resource_auth import ResourceAuthorizer
+from okdata.sdk.dataset_authorizer.simple_dataset_authorizer_client import (
     SimpleDatasetAuthorizerClient,
 )
 
@@ -18,7 +19,8 @@ from event_data_subscription.publish_event import api_gateway_client
 
 
 auth_token = "AbcdefghijklmnoP12345="
-bad_auth_token = "eyJhbGciOiJSUzI1N"
+auth_token_unauthorized = "eyJhbGciOiJSUzI1N"
+auth_token_bad = "foo"
 dataset_id = "test-event-subscription"
 dataset_id_no_subs = "dataset-no-subscriber"
 connection_id = "UqoGzdQVUkwCljw="
@@ -98,7 +100,19 @@ kinesis_event = {
 
 
 @pytest.fixture(scope="function")
-def mock_auth(monkeypatch):
+def mock_resource_auth(monkeypatch):
+    def check_token(self, token, scope, resource_name):
+        if token == auth_token_bad:
+            e = HTTPError()
+            e.response = Mock(status_code=401)
+            raise e
+        return token == auth_token
+
+    monkeypatch.setattr(ResourceAuthorizer, "has_access", check_token)
+
+
+@pytest.fixture(scope="function")
+def mock_simple_auth(monkeypatch):
     def check_token(self, dataset_id, bearer_token):
         return {"access": True if bearer_token == auth_token else False}
 
@@ -108,6 +122,11 @@ def mock_auth(monkeypatch):
     monkeypatch.setattr(
         SimpleDatasetAuthorizerClient, "authorize_webhook_token", check_token
     )
+
+
+@pytest.fixture(scope="function")
+def mock_auth(mock_resource_auth, mock_simple_auth):
+    pass
 
 
 @pytest.fixture(scope="function")

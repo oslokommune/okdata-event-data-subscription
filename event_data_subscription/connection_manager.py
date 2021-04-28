@@ -3,18 +3,20 @@ import datetime
 
 from requests.exceptions import HTTPError
 from aws_xray_sdk.core import patch_all, xray_recorder
-from dataplatform.awslambda.logging import logging_wrapper, log_add, log_exception
 
-from origo.dataset_authorizer.simple_dataset_authorizer_client import (
+from okdata.aws.logging import logging_wrapper, log_add, log_exception
+from okdata.resource_auth import ResourceAuthorizer
+from okdata.sdk.dataset_authorizer.simple_dataset_authorizer_client import (
     SimpleDatasetAuthorizerClient,
 )
-from origo.config import Config
+from okdata.sdk.config import Config
 
 patch_all()
 
 origo_config = Config()
 origo_config.config["cacheCredentials"] = False
 auth_client = SimpleDatasetAuthorizerClient(config=origo_config)
+resource_authorizer = ResourceAuthorizer()
 
 dynamodb = boto3.resource("dynamodb", region_name="eu-west-1")
 subscriptions_table_name = "event-data-subscriptions"
@@ -46,21 +48,24 @@ def handle(event, context):
         if not dataset_id or not any([auth_token, webhook_token]):
             return {"statusCode": 400, "body": "Bad request"}
 
+        has_access = False
+
         try:
-            has_access = (
-                auth_client.check_dataset_access(dataset_id, bearer_token=auth_token)
-                if auth_token
-                else auth_client.authorize_webhook_token(dataset_id, webhook_token)
-            ).get("access", False)
+            if auth_token:
+                has_access = resource_authorizer.has_access(
+                    auth_token,
+                    scope="okdata:dataset:read",
+                    resource_name=f"okdata:dataset:{dataset_id}",
+                )
+            else:
+                has_access = auth_client.authorize_webhook_token(
+                    dataset_id, webhook_token
+                ).get("access", False)
         except HTTPError as e:
             log_exception(e)
             if e.response.status_code == 401:
                 return {"statusCode": 401, "body": "Unauthorized"}
-            else:
-                return {
-                    "statusCode": 500,
-                    "body": f"Error occured during connect. RequestId: {context.aws_request_id}",
-                }
+            return {"statusCode": 500, "body": "Error occured during connect"}
 
         log_add(has_dataset_access=has_access)
 

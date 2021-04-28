@@ -1,9 +1,11 @@
 import os
 import base64
+
 import boto3
 from boto3.dynamodb.conditions import Key
 from aws_xray_sdk.core import patch_all, xray_recorder
-from dataplatform.awslambda.logging import logging_wrapper, log_add, log_exception
+
+from okdata.aws.logging import logging_wrapper, log_add, log_exception
 
 patch_all()
 
