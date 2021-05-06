@@ -4,7 +4,7 @@
 #
 #    pip-compile
 #
-attrs==20.3.0
+attrs==21.1.0
     # via jsonschema
 certifi==2020.12.5
     # via requests
@@ -20,11 +20,11 @@ importlib-metadata==4.0.1
     #   prettytable
 jsonschema==3.2.0
     # via okdata-sdk
-okdata-aws==0.3.2
+okdata-aws==0.3.3
     # via event-data-subscription (setup.py)
 okdata-resource-auth==0.1.0
     # via event-data-subscription (setup.py)
-okdata-sdk==0.7.0
+okdata-sdk==0.8.1
     # via
     #   event-data-subscription (setup.py)
     #   okdata-aws
@@ -36,7 +36,7 @@ pyasn1==0.4.8
     #   rsa
 pydantic==1.8.1
     # via okdata-aws
-pyjwt==2.0.1
+pyjwt==2.1.0
     # via okdata-sdk
 pyrsistent==0.17.3
     # via jsonschema
@@ -51,14 +51,14 @@ requests==2.25.1
     #   python-keycloak
 rsa==4.7.2
     # via python-jose
-six==1.15.0
+six==1.16.0
     # via
     #   ecdsa
     #   jsonschema
     #   python-jose
 structlog==21.1.0
     # via okdata-aws
-typing-extensions==3.7.4.3
+typing-extensions==3.10.0.0
     # via
     #   importlib-metadata
     #   pydantic
