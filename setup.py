@@ -21,5 +21,6 @@ setup(
         "okdata-sdk>=0.8.1",
         "okdata-aws>=0.3.3",
         "okdata-resource-auth>=0.1.0",
+        "idna<2.9.0",  # Needed for moto
     ],
 )
