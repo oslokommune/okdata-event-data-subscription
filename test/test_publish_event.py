@@ -1,7 +1,6 @@
 import base64
-from aws_xray_sdk.core import xray_recorder
 
-import event_data_subscription.publish_event as publish_event
+from aws_xray_sdk.core import xray_recorder
 
 from test.conftest import (
     kinesis_event,
@@ -20,6 +19,8 @@ xray_recorder.begin_segment("Test")
 
 class TestPublishEvent:
     def test_publish_events_handle(self, mocker):
+        import event_data_subscription.publish_event as publish_event
+
         mocker.patch(
             "event_data_subscription.publish_event.api_gateway_client.post_to_connection"
         )
@@ -45,6 +46,8 @@ class TestPublishEvent:
         )
 
     def test_get_subscriber_connections_ids(self, mock_dynamodb):
+        import event_data_subscription.publish_event as publish_event
+
         create_subscriptions_table(
             items=[
                 {
@@ -66,5 +69,7 @@ class TestPublishEvent:
         assert connection_id in connection_ids
 
     def test_resolve_dataset_id(self):
+        import event_data_subscription.publish_event as publish_event
+
         assert publish_event.resolve_dataset_id(stream_arn) == dataset_id
         assert publish_event.resolve_dataset_id(stream_arn_ignore) == dataset_id_no_subs

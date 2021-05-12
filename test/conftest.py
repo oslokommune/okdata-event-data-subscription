@@ -1,22 +1,15 @@
+import base64
 import json
+from unittest.mock import Mock
+
 import boto3
 import pytest
-import base64
-from unittest.mock import Mock
 from moto import mock_dynamodb2
-from requests.exceptions import HTTPError
-
 from okdata.resource_auth import ResourceAuthorizer
 from okdata.sdk.dataset_authorizer.simple_dataset_authorizer_client import (
     SimpleDatasetAuthorizerClient,
 )
-
-from event_data_subscription.connection_manager import (
-    subscriptions_table_name as table_name,
-)
-
-from event_data_subscription.publish_event import api_gateway_client
-
+from requests.exceptions import HTTPError
 
 auth_token = "AbcdefghijklmnoP12345="
 auth_token_unauthorized = "eyJhbGciOiJSUzI1N"
@@ -30,6 +23,10 @@ stream_arn_ignore = f"arn:aws:kinesis:eu-west-1:123456789101:stream/dp.green.{da
 
 
 def create_subscriptions_table(items=[], region="eu-west-1"):
+    from event_data_subscription.connection_manager import (
+        subscriptions_table_name as table_name,
+    )
+
     client = boto3.client("dynamodb", region_name=region)
     client.create_table(
         TableName=table_name,
@@ -148,6 +145,8 @@ def mock_dynamodb():
 
 @pytest.fixture(scope="function")
 def mock_api_gateway(monkeypatch):
+    from event_data_subscription.publish_event import api_gateway_client
+
     def post_event(**kwargs):
         pass
 
