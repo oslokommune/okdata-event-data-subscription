@@ -4,20 +4,24 @@
 #
 #    pip-compile
 #
-attrs==21.1.0
+attrs==21.2.0
     # via jsonschema
+aws-xray-sdk==2.8.0
+    # via event-data-subscription (setup.py)
+botocore==1.20.71
+    # via aws-xray-sdk
 certifi==2020.12.5
     # via requests
 chardet==4.0.0
     # via requests
 ecdsa==0.14.1
     # via python-jose
+future==0.18.2
+    # via aws-xray-sdk
 idna==2.10
     # via requests
-importlib-metadata==4.0.1
-    # via
-    #   jsonschema
-    #   prettytable
+jmespath==0.10.0
+    # via botocore
 jsonschema==3.2.0
     # via okdata-sdk
 okdata-aws==0.3.3
@@ -34,12 +38,14 @@ pyasn1==0.4.8
     # via
     #   python-jose
     #   rsa
-pydantic==1.8.1
+pydantic==1.8.2
     # via okdata-aws
 pyjwt==2.1.0
     # via okdata-sdk
 pyrsistent==0.17.3
     # via jsonschema
+python-dateutil==2.8.1
+    # via botocore
 python-jose==3.2.0
     # via python-keycloak
 python-keycloak==0.24.0
@@ -55,22 +61,21 @@ six==1.16.0
     # via
     #   ecdsa
     #   jsonschema
+    #   python-dateutil
     #   python-jose
 structlog==21.1.0
     # via okdata-aws
 typing-extensions==3.10.0.0
-    # via
-    #   importlib-metadata
-    #   pydantic
-    #   structlog
+    # via pydantic
 urllib3==1.26.4
     # via
+    #   botocore
     #   okdata-sdk
     #   requests
 wcwidth==0.2.5
     # via prettytable
-zipp==3.4.1
-    # via importlib-metadata
+wrapt==1.12.1
+    # via aws-xray-sdk
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

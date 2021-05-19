@@ -18,8 +18,9 @@ setup(
     url="https://github.oslo.kommune.no/origo-dataplatform/event-data-subscription",
     packages=find_packages(),
     install_requires=[
-        "okdata-sdk>=0.8.1",
+        "aws-xray-sdk",
         "okdata-aws>=0.3.3",
         "okdata-resource-auth>=0.1.0",
+        "okdata-sdk>=0.8.1",
     ],
 )

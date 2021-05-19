@@ -1,7 +1,5 @@
-from freezegun import freeze_time
 from aws_xray_sdk.core import xray_recorder
-
-import event_data_subscription.connection_manager as connection_manager
+from freezegun import freeze_time
 
 from test.conftest import (
     connection_event,
@@ -14,13 +12,14 @@ from test.conftest import (
     dataset_id,
 )
 
-
 xray_recorder.begin_segment("Test")
 
 
 class TestConnectionManager:
     @freeze_time(datetime_now)
     def test_connect_ok_bearer(self, mock_auth, mock_dynamodb):
+        import event_data_subscription.connection_manager as connection_manager
+
         table = create_subscriptions_table()
 
         response = connection_manager.handle(
@@ -43,6 +42,8 @@ class TestConnectionManager:
 
     @freeze_time(datetime_now)
     def test_connect_ok_webhook(self, mock_auth, mock_dynamodb):
+        import event_data_subscription.connection_manager as connection_manager
+
         table = create_subscriptions_table()
 
         response = connection_manager.handle(
@@ -64,6 +65,8 @@ class TestConnectionManager:
         }
 
     def test_connect_bad_auth(self, mock_auth, mock_dynamodb):
+        import event_data_subscription.connection_manager as connection_manager
+
         no_auth_event = connection_event("CONNECT", connection_id, dataset_id)
         webhook_auth_event = connection_event(
             "CONNECT", connection_id, dataset_id, webhook_token=auth_token_unauthorized
@@ -82,6 +85,8 @@ class TestConnectionManager:
         assert connection_manager.handle(webhook_auth_event, {}) == forbidden_response
 
     def test_connect_unauthorized(self, mock_auth, mock_dynamodb):
+        import event_data_subscription.connection_manager as connection_manager
+
         event = connection_event(
             "CONNECT", connection_id, dataset_id, bearer_token=auth_token_bad
         )
@@ -91,6 +96,8 @@ class TestConnectionManager:
         }
 
     def test_disconnect_ok(self, mock_auth, mock_dynamodb):
+        import event_data_subscription.connection_manager as connection_manager
+
         connected_client_item = {
             "connection_id": connection_id,
             "dataset_id": dataset_id,
@@ -107,6 +114,8 @@ class TestConnectionManager:
         assert response["body"] == "Disconnected"
 
     def test_unknown_event_type(self, mock_dynamodb):
+        import event_data_subscription.connection_manager as connection_manager
+
         assert connection_manager.handle(
             connection_event("UNKNOWN", connection_id, dataset_id), {}
         ) == {"statusCode": 500, "body": "Unrecognized event type"}
