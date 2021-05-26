@@ -45,7 +45,7 @@ def handle(event, context):
         log_add(dataset_id=dataset_id)
 
         if not dataset_id or not any([auth_token, webhook_token]):
-            return {"statusCode": 400, "body": "Bad request"}
+            return error_response(400, "Bad request")
 
         try:
             if auth_token:
@@ -70,8 +70,8 @@ def handle(event, context):
         except HTTPError as e:
             log_exception(e)
             if e.response.status_code == 401:
-                return {"statusCode": 401, "body": "Unauthorized"}
-            return {"statusCode": 500, "body": "Error occured during connect"}
+                return error_response(401, "Unauthorized")
+            return error_response(500, "Error occured during connect")
 
         subscriptions_table.put_item(
             Item={
@@ -93,7 +93,7 @@ def handle(event, context):
         return {"statusCode": 200, "body": "Disconnected"}
 
     else:
-        return {"statusCode": 500, "body": "Unrecognized event type"}
+        return error_response(500, "Unrecognized event type")
 
 
 def error_response(status_code: int, msg: str):
