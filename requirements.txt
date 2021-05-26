@@ -20,6 +20,8 @@ future==0.18.2
     # via aws-xray-sdk
 idna==2.10
     # via requests
+importlib-metadata==4.0.1
+    # via jsonschema
 jmespath==0.10.0
     # via botocore
 jsonschema==3.2.0
@@ -28,12 +30,10 @@ okdata-aws==0.3.3
     # via event-data-subscription (setup.py)
 okdata-resource-auth==0.1.0
     # via event-data-subscription (setup.py)
-okdata-sdk==0.8.1
+okdata-sdk==0.9.0
     # via
     #   event-data-subscription (setup.py)
     #   okdata-aws
-prettytable==2.1.0
-    # via okdata-sdk
 pyasn1==0.4.8
     # via
     #   python-jose
@@ -66,16 +66,19 @@ six==1.16.0
 structlog==21.1.0
     # via okdata-aws
 typing-extensions==3.10.0.0
-    # via pydantic
+    # via
+    #   importlib-metadata
+    #   pydantic
+    #   structlog
 urllib3==1.26.4
     # via
     #   botocore
     #   okdata-sdk
     #   requests
-wcwidth==0.2.5
-    # via prettytable
 wrapt==1.12.1
     # via aws-xray-sdk
+zipp==3.4.1
+    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

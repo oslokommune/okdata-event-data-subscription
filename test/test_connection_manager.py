@@ -68,9 +68,6 @@ class TestConnectionManager:
         import event_data_subscription.connection_manager as connection_manager
 
         no_auth_event = connection_event("CONNECT", connection_id, dataset_id)
-        webhook_auth_event = connection_event(
-            "CONNECT", connection_id, dataset_id, webhook_token=auth_token_unauthorized
-        )
         bearer_auth_event = connection_event(
             "CONNECT", connection_id, dataset_id, bearer_token=auth_token_unauthorized
         )
@@ -78,7 +75,7 @@ class TestConnectionManager:
             "CONNECT", connection_id, dataset_id, webhook_token=auth_token_unauthorized
         )
         bad_request_response = {"statusCode": 400, "body": "Bad request"}
-        forbidden_response = {"statusCode": 403, "body": "Forbidden"}
+        forbidden_response = {"statusCode": 403, "body": '{"message": "Forbidden"}'}
 
         assert connection_manager.handle(no_auth_event, {}) == bad_request_response
         assert connection_manager.handle(bearer_auth_event, {}) == forbidden_response
