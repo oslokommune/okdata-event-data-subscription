@@ -21,6 +21,6 @@ setup(
         "aws-xray-sdk",
         "okdata-aws>=0.3.3",
         "okdata-resource-auth>=0.1.0",
-        "okdata-sdk>=0.8.1",
+        "okdata-sdk>=0.9.0",
     ],
 )

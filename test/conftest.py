@@ -6,9 +6,7 @@ import boto3
 import pytest
 from moto import mock_dynamodb2
 from okdata.resource_auth import ResourceAuthorizer
-from okdata.sdk.dataset_authorizer.simple_dataset_authorizer_client import (
-    SimpleDatasetAuthorizerClient,
-)
+from okdata.sdk.webhook.client import WebhookClient
 from requests.exceptions import HTTPError
 
 auth_token = "AbcdefghijklmnoP12345="
@@ -109,33 +107,20 @@ def mock_resource_auth(monkeypatch):
 
 
 @pytest.fixture(scope="function")
-def mock_simple_auth(monkeypatch):
-    def check_token(self, dataset_id, bearer_token):
-        return {"access": True if bearer_token == auth_token else False}
+def mock_webhook_auth(monkeypatch):
+    def authorize_webhook_token(self, dataset_id, token, operation, retries):
+        if token == auth_token and operation == "read":
+            return {"access": True, "reason": None}
+        return {"access": False, "reason": "Forbidden"}
 
     monkeypatch.setattr(
-        SimpleDatasetAuthorizerClient, "check_dataset_access", check_token
-    )
-    monkeypatch.setattr(
-        SimpleDatasetAuthorizerClient, "authorize_webhook_token", check_token
+        WebhookClient, "authorize_webhook_token", authorize_webhook_token
     )
 
 
 @pytest.fixture(scope="function")
-def mock_auth(mock_resource_auth, mock_simple_auth):
+def mock_auth(mock_resource_auth, mock_webhook_auth):
     pass
-
-
-@pytest.fixture(scope="function")
-def mock_auth_error(monkeypatch):
-    def check_token(self, dataset_id, bearer_token):
-        e = HTTPError()
-        e.response = Mock(status_code=401)
-        raise e
-
-    monkeypatch.setattr(
-        SimpleDatasetAuthorizerClient, "check_dataset_access", check_token
-    )
 
 
 @pytest.fixture(scope="function")

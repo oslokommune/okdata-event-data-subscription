@@ -68,17 +68,14 @@ class TestConnectionManager:
         import event_data_subscription.connection_manager as connection_manager
 
         no_auth_event = connection_event("CONNECT", connection_id, dataset_id)
-        webhook_auth_event = connection_event(
-            "CONNECT", connection_id, dataset_id, webhook_token=auth_token_unauthorized
-        )
         bearer_auth_event = connection_event(
             "CONNECT", connection_id, dataset_id, bearer_token=auth_token_unauthorized
         )
         webhook_auth_event = connection_event(
             "CONNECT", connection_id, dataset_id, webhook_token=auth_token_unauthorized
         )
-        bad_request_response = {"statusCode": 400, "body": "Bad request"}
-        forbidden_response = {"statusCode": 403, "body": "Forbidden"}
+        bad_request_response = {"statusCode": 400, "body": '{"message": "Bad request"}'}
+        forbidden_response = {"statusCode": 403, "body": '{"message": "Forbidden"}'}
 
         assert connection_manager.handle(no_auth_event, {}) == bad_request_response
         assert connection_manager.handle(bearer_auth_event, {}) == forbidden_response
@@ -92,7 +89,7 @@ class TestConnectionManager:
         )
         assert connection_manager.handle(event, {}) == {
             "statusCode": 401,
-            "body": "Unauthorized",
+            "body": '{"message": "Unauthorized"}',
         }
 
     def test_disconnect_ok(self, mock_auth, mock_dynamodb):
@@ -118,4 +115,4 @@ class TestConnectionManager:
 
         assert connection_manager.handle(
             connection_event("UNKNOWN", connection_id, dataset_id), {}
-        ) == {"statusCode": 500, "body": "Unrecognized event type"}
+        ) == {"statusCode": 500, "body": '{"message": "Unrecognized event type"}'}

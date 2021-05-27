@@ -1,21 +1,20 @@
 import boto3
 import datetime
+import json
 
-from requests.exceptions import HTTPError
 from aws_xray_sdk.core import patch_all, xray_recorder
 
 from okdata.aws.logging import logging_wrapper, log_add, log_exception
 from okdata.resource_auth import ResourceAuthorizer
-from okdata.sdk.dataset_authorizer.simple_dataset_authorizer_client import (
-    SimpleDatasetAuthorizerClient,
-)
+from okdata.sdk.webhook.client import WebhookClient
 from okdata.sdk.config import Config
+from requests.exceptions import HTTPError
 
 patch_all()
 
 origo_config = Config()
 origo_config.config["cacheCredentials"] = False
-auth_client = SimpleDatasetAuthorizerClient(config=origo_config)
+webhook_client = WebhookClient(config=origo_config)
 resource_authorizer = ResourceAuthorizer()
 
 dynamodb = boto3.resource("dynamodb", region_name="eu-west-1")
@@ -46,9 +45,7 @@ def handle(event, context):
         log_add(dataset_id=dataset_id)
 
         if not dataset_id or not any([auth_token, webhook_token]):
-            return {"statusCode": 400, "body": "Bad request"}
-
-        has_access = False
+            return error_response(400, "Bad request")
 
         try:
             if auth_token:
@@ -57,20 +54,24 @@ def handle(event, context):
                     scope="okdata:dataset:read",
                     resource_name=f"okdata:dataset:{dataset_id}",
                 )
+                forbidden_msg = "Forbidden"
             else:
-                has_access = auth_client.authorize_webhook_token(
-                    dataset_id, webhook_token
-                ).get("access", False)
+                auth_response = webhook_client.authorize_webhook_token(
+                    dataset_id, webhook_token, "read", retries=3
+                )
+                has_access = auth_response["access"]
+                forbidden_msg = auth_response["reason"]
+
+            log_add(has_dataset_access=has_access)
+
+            if not has_access:
+                return error_response(403, forbidden_msg)
+
         except HTTPError as e:
             log_exception(e)
             if e.response.status_code == 401:
-                return {"statusCode": 401, "body": "Unauthorized"}
-            return {"statusCode": 500, "body": "Error occured during connect"}
-
-        log_add(has_dataset_access=has_access)
-
-        if not has_access:
-            return {"statusCode": 403, "body": "Forbidden"}
+                return error_response(401, "Unauthorized")
+            return error_response(500, "Error occured during connect")
 
         subscriptions_table.put_item(
             Item={
@@ -92,4 +93,8 @@ def handle(event, context):
         return {"statusCode": 200, "body": "Disconnected"}
 
     else:
-        return {"statusCode": 500, "body": "Unrecognized event type"}
+        return error_response(500, "Unrecognized event type")
+
+
+def error_response(status_code: int, msg: str):
+    return {"statusCode": status_code, "body": json.dumps({"message": msg})}
