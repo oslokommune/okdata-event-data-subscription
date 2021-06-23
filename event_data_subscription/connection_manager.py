@@ -24,8 +24,7 @@ subscriptions_table = dynamodb.Table(subscriptions_table_name)
 
 def get_bearer_token(header):
     auth_type, _, token = header.partition(" ")
-    if auth_type.lower() == "bearer" and token:
-        return token
+    return token if auth_type.lower() == "bearer" and token else None
 
 
 @logging_wrapper
