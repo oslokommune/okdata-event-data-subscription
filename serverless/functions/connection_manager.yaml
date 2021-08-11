@@ -8,6 +8,3 @@ events:
           webhook_token: false
   - websocket:
       route: $disconnect
-layers:
-  - ${ssm:/dataplatform/shared/python-base-layer-arn}
-

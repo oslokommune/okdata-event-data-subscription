@@ -1,3 +1,1 @@
 handler: event_data_subscription.publish_event.handle
-layers:
-  - ${ssm:/dataplatform/shared/python-base-layer-arn}
